@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .form {
+        padding-left: 100px;
+        padding-top: 50px;
+        color: rgb(224, 75, 75);
+        font-family: Arial;
+        font-size: 50px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input-style {
+        padding-top: 10px;
+        height: 50px;
+        width: 500px;
+    }
+
+    .btns {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+    }
+
+    .btn-pesquisar {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding-left: 110px;
+    }
+
+    button {
+        background-color: rgba(105, 90, 205, 0);
+        border-color: rgb(215, 115, 8);
+        height: 50px;
+        width: 200px;
+        color: rgb(215, 115, 8);
+        font-size: 30px;
+    }
+
+    b {
+        padding-right: 30px;
+    }
+
+    .in_n1 {
+        width: 250px;
+        font-size: 35px;
+    }
+
+    .in_n1,
+    input::placeholder {
+        color: rgb(183, 121, 6);
+    }
+
+    .in_n2 {
+        width: 250px;
+        font-size: 35px;
+    }
+
+    .in_n2,
+    input::placeholder {
+        color:rgb(183, 121, 6);
+    }
+</style>
+<body>
+    <div id="div_part1">
+        <div class="form">
+            <span>Análise de performace de alunos - Registro</span><br>
+            <span>Entre com o nome do Aluno: <input class="input-style" type="text" id="in_nome"></span><br>
+            <span>Entre com a nota do Aluno: <input class="input-style" type="text" id="in_nota"></span><br><br>
+        </div>
+        <div class="btns">
+            <button onclick="registrar()">Registrar</button><b></b>
+            <button onclick="analisar()">Analisar</button>
+        </div>
+
+        <div class="form" id="div_resultado"></div>
+    </div>
+ 
+    <br>
+
+    <div class="form" id="div_pesquisa"></div>
+
+</body>
+</html>
+
+<script>
+
+    var alunos = []
+    var notasIntervalo = []
+    var maiorNota = 0
+    var menorNota = 0
+    var mediaNotas = 0    
+
+    function registrar() {
+        div_resultado.innerHTML = ``
+        var mensagem = ``
+        var nome = in_nome.value
+        var nota = Number(in_nota.value)
+        var nomeValido = nome != ``
+        var notaValida = nota >= 0 && nota <= 10
+        if (!nomeValido || !notaValida) {
+            if (nome == "" && nota == "") {
+                mensagem += `Preencha todos os campos<br>`
+            } else {
+                if (!nomeValido) {
+                    mensagem += `Preencha o campo Nome do Aluno<br>`
+                }
+                if (!notaValida) {
+                    mensagem += `A nota do Aluno deve estar entre 0 e 10`
+                    in_nota.value = ``
+                }
+            }
+        } else {
+            var aluno = {
+                nome: nome,
+                nota: nota
+            }
+
+            alunos.push(aluno)
+
+            for (var i = alunos.length - 1; i >= 0; i--) {
+                mensagem += `Nome: ${alunos[i].nome}; Nota: ${alunos[i].nota}<br>`
+            }
+        }
+        div_resultado.innerHTML = mensagem
+    }
+
+    function analisar() {
+        div_part1.innerHTML = `
+        <div class="form">
+        <span>Análise de performace de alunos - Pesquisa</span><br>
+        <span>Entre com o intervalo de notas: <input placeholder="De" type="text" id="in_n1" class="in_n1"> <input placeholder="Até" type="text" id="in_n2"class="in_n2" ></span><br>
+    </div>
+    
+    <div class="btn-pesquisar" style="padding-left:65% ;">
+        <button onclick="pesquisarPorFiltro()">Aplicar Filtro</button>
+        <select name="" id="sel_filtro">
+            <option value=""> --------Filtros--------</option>
+            <option value="nome">Nome</option>
+            <option value="maior">Nota maior que</option>
+            <option value="menor">Nota menor que</option>
+        </select>
+        <input placeholder="Insira o valor aqui" type="text" id="in_filtro" style="text-align: center;">
+    </div><br>
+    <div class="btn-pesquisar">
+        <button onclick="pesquisar()">Pesquisar</button>
+    </div>
+        `
+    }
+
+    function pesquisar() {
+        div_pesquisa.innerHTML = ``
+        notasIntervalo = []
+        var de = Number(in_n1.value)
+        var ate = Number(in_n2.value)
+        maiorNota = Number(in_n1.value)
+        menorNota = Number(in_n2.value)
+
+        var mensagem = ``
+
+        var intervaloValido = (de >= 0 && de <= 10) && (ate >= 0 && ate <= 10)
+
+        if (in_n1.value == "" || in_n2.value == "") {
+            mensagem = `Preencha o caampo De e Até`
+        }else if(ate < de){
+            mensagem = `O campo De deve ser menor que o campo Até`
+            in_n1.value = ``
+            in_n2.value = ``
+        }else if (!intervaloValido) {
+            mensagem = "O campo De e Até devem estar entre 0 e 10"
+        }else{
+            var somaNotas = 0
+            for(var i = 0; i < alunos.length; i++){
+                if(alunos[i].nota >= de && alunos[i].nota <= ate){
+                    notaAtualIntervalo = alunos[i].nota
+                    nomeAtualIntervalo = alunos[i].nome
+                    notasIntervalo.push(notaAtualIntervalo)
+                    mensagem += `O aluno ${nomeAtualIntervalo} ficou com a nota ${(notaAtualIntervalo).toFixed(2)}<br>`
+                }
+            }
+
+            for(var x = 0; x < notasIntervalo.length; x++){
+                if(notasIntervalo[x] >= maiorNota){
+                    maiorNota = notasIntervalo[x]
+                }
+                if(notasIntervalo[x] <= menorNota){
+                    menorNota = notasIntervalo[x]
+                }
+                somaNotas += notasIntervalo[x]
+            }
+
+            mediaNotas = somaNotas / notasIntervalo.length
+
+            mensagem += `<br>
+            Total de alunos registrados: ${alunos.length}<br><br>
+
+            Total de alunos listado: ${notasIntervalo.length} (com nota no intervalo informado)<br><br>
+
+            Maior Nota = ${(maiorNota).toFixed(1)} <br><br>
+
+            Menor Nota = ${(menorNota).toFixed(1)} <br><br>
+
+            Média da Nota = ${(mediaNotas).toFixed(1)}
+            `
+
+        }
+        div_pesquisa.innerHTML = mensagem
+    }
+
+    function pesquisarPorFiltro(){
+        div_pesquisa.innerHTML = ``
+        var mensagem = ``
+        var notasFiltradas = []
+        var tipoFiltro = sel_filtro.value
+        var valorFiltro = in_filtro.value
+        var nomeFiltrado = ``
+        var notaFiltrada = 0
+        for(var i = 0; i < alunos.length; i++){
+            if(tipoFiltro == "nome"){
+                if(alunos[i].nome == valorFiltro){
+                    nomeFiltrado = alunos[i].nome
+                    notaFiltrada = alunos[i].nota
+                    mensagem = `Nome: ${nomeFiltrado}; Nota: ${notaFiltrada}<br>`
+                }
+            }else if(tipoFiltro == "maior"){
+                if(alunos[i].nota >= valorFiltro){
+                    notaFiltrada = alunos[i].nota
+                    nomeFiltrado = alunos[i].nome
+                    notasFiltradas.push(notaFiltrada)
+                    mensagem += `Nome: ${nomeFiltrado}; Nota: ${notaFiltrada}<br>`
+
+                }
+            }else if(tipoFiltro == "menor"){
+                if (alunos[i].nota < valorFiltro) {
+                    notaFiltrada = alunos[i].nota
+                    nomeFiltrado = alunos[i].nome
+                    notasFiltradas.push(notaFiltrada)
+                    mensagem += `Nome: ${nomeFiltrado}; Nota: ${notaFiltrada}<br>`
+                }
+            }
+        }
+
+        div_pesquisa.innerHTML = mensagem
+    }
+</script>
