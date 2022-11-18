@@ -1,6 +1,5 @@
 # Praticas-Pre-AC3
 
-Exercício
 1) A professora Alice precisa de um programa que auxilie na análise de performance de sua turma. 
 
 Parte-1
